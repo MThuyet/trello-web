@@ -22,6 +22,7 @@ const Starred = () => {
   return (
     <Box>
       <Button
+        sx={{ color: '#fff' }}
         id="fade-button-starred"
         aria-controls={open ? 'fade-menu-starred' : undefined}
         aria-haspopup="true"

@@ -17,8 +17,28 @@ function ModeSelect() {
 
   return (
     <FormControl size="small" sx={{ minWidth: 120 }}>
-      <InputLabel id="label-select-dart-light-mode">Mode</InputLabel>
-      <Select labelId="label-select-dart-light-mode" id="select-dart-light-mode" value={mode} label="Mode" onChange={handleChange}>
+      <InputLabel
+        sx={{
+          color: '#fff',
+          '&.Mui-focused': { color: '#fff' }
+        }}
+        id="label-select-dart-light-mode">
+        Mode
+      </InputLabel>
+
+      <Select
+        labelId="label-select-dart-light-mode"
+        id="select-dart-light-mode"
+        value={mode}
+        label="Mode"
+        onChange={handleChange}
+        sx={{
+          color: '#fff',
+          '.MuiOutlinedInput-notchedOutline': { borderColor: '#fff' },
+          '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#fff' },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#fff' },
+          '.MuiSvgIcon-root': { color: '#fff' }
+        }}>
         <MenuItem value="light">
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <LightModeIcon fontSize="small" />
