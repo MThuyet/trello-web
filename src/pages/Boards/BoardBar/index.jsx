@@ -12,13 +12,13 @@ import Button from '@mui/material/Button'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 
 const CHIP_STYLE = {
-  color: 'primary.main',
-  backgroundColor: 'white',
+  color: '#fff',
+  backgroundColor: 'transparent',
   border: 'none',
   paddingX: '5px',
   borderRadius: '4px',
-  '& .MuiSvgIcon-root': {
-    color: 'primary.main'
+  '.MuiSvgIcon-root': {
+    color: '#fff'
   },
   '&:hover': {
     bgcolor: 'primary.50'
@@ -37,7 +37,8 @@ const BoardBar = () => {
         justifyContent: 'space-between',
         gap: 2,
         overflow: 'auto',
-        borderTop: '1px solid #00bfa5'
+        bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'),
+        borderBottom: '1px solid #fff'
       }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Chip sx={CHIP_STYLE} icon={<DashboardIcon />} label="MTHUYET MERN Stack Board" clickable />
@@ -52,10 +53,29 @@ const BoardBar = () => {
       </Box>
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button variant="outlined" startIcon={<PersonAddIcon />}>
+        <Button
+          variant="outlined"
+          startIcon={<PersonAddIcon />}
+          sx={{
+            color: '#fff',
+            borderColor: '#fff',
+            '&:hover': {
+              borderColor: '#fff'
+            }
+          }}>
           Invite
         </Button>
-        <AvatarGroup max={7} sx={{ '& .MuiAvatar-root': { width: 34, height: 34, fontSize: 16 } }}>
+        <AvatarGroup
+          max={7}
+          sx={{
+            gap: '10px',
+            '& .MuiAvatar-root': {
+              width: 34,
+              height: 34,
+              fontSize: 16,
+              border: 'none'
+            }
+          }}>
           <Tooltip title="mthuyet</>dev">
             <Avatar
               alt="mthuyet</>dev"
