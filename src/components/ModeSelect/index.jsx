@@ -16,7 +16,7 @@ function ModeSelect() {
   }
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+    <FormControl size="small">
       <InputLabel id="label-select-dart-light-mode">Mode</InputLabel>
       <Select labelId="label-select-dart-light-mode" id="select-dart-light-mode" value={mode} label="Mode" onChange={handleChange}>
         <MenuItem value="light">
