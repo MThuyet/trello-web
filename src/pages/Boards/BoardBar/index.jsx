@@ -73,7 +73,10 @@ const BoardBar = () => {
               width: 34,
               height: 34,
               fontSize: 16,
-              border: 'none'
+              border: 'none',
+              color: '#fff',
+              cursor: 'pointer',
+              '&:first-of-type': { bgcolor: '#a4b0be' }
             }
           }}>
           <Tooltip title="mthuyet</>dev">
