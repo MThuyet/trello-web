@@ -37,8 +37,7 @@ const BoardBar = () => {
         justifyContent: 'space-between',
         gap: 2,
         overflow: 'auto',
-        bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'),
-        borderBottom: '1px solid #fff'
+        bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2')
       }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Chip sx={CHIP_STYLE} icon={<DashboardIcon />} label="MTHUYET MERN Stack Board" clickable />
