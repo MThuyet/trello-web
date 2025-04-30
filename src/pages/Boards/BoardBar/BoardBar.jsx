@@ -10,6 +10,7 @@ import AvatarGroup from '@mui/material/AvatarGroup'
 import Tooltip from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import { capitalizeFirstLetter } from '~/utils/formatter'
 
 const CHIP_STYLE = {
   color: '#fff',
@@ -25,7 +26,7 @@ const CHIP_STYLE = {
   }
 }
 
-const BoardBar = () => {
+const BoardBar = ({ board }) => {
   return (
     <Box
       sx={{
@@ -40,9 +41,9 @@ const BoardBar = () => {
         bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2')
       }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Chip sx={CHIP_STYLE} icon={<DashboardIcon />} label="MTHUYET MERN Stack Board" clickable />
+        <Chip sx={CHIP_STYLE} icon={<DashboardIcon />} label={board?.title} clickable />
 
-        <Chip sx={CHIP_STYLE} icon={<VpnLockIcon />} label="Public/Private Workspace" clickable />
+        <Chip sx={CHIP_STYLE} icon={<VpnLockIcon />} label={capitalizeFirstLetter(board?.type)} clickable />
 
         <Chip sx={CHIP_STYLE} icon={<AddToDriveIcon />} label="Add to Google Drive" clickable />
 

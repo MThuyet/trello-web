@@ -8,20 +8,9 @@ import AttachmentIcon from '@mui/icons-material/Attachment'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 
-const Card = ({ temporaryHideMedia }) => {
-  if (temporaryHideMedia) {
-    return (
-      <MuiCard
-        sx={{
-          cursor: 'pointer',
-          boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
-          overflow: 'unset'
-        }}>
-        <CardContent sx={{ p: 1.5, '&:last-child': { p: 1.5 } }}>
-          <Typography>Card test 01</Typography>
-        </CardContent>
-      </MuiCard>
-    )
+const Card = ({ card }) => {
+  const shouldShowCardAction = () => {
+    return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
   }
 
   return (
@@ -31,25 +20,36 @@ const Card = ({ temporaryHideMedia }) => {
         boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
         overflow: 'unset'
       }}>
-      <CardMedia
-        sx={{ height: 140 }}
-        image="https://trungquandev.com/wp-content/uploads/2024/08/trungquandev-mot-lap-trinh-vien-Youtube-Cover-3556x2000-1-1170x658.png"
-        title="green iguana"
-      />
+      {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />}
+
       <CardContent sx={{ p: 1.5, '&:last-child': { p: 1.5 } }}>
-        <Typography>MTHUYET DEV MERN Stack</Typography>
+        <Typography>{card?.title}</Typography>
       </CardContent>
-      <CardActions sx={{ p: '0 4px 8px 4px' }}>
-        <Button size="small" startIcon={<GroupIcon />}>
-          20
-        </Button>
-        <Button size="small" startIcon={<CommentIcon />}>
-          15
-        </Button>
-        <Button size="small" startIcon={<AttachmentIcon />}>
-          10
-        </Button>
-      </CardActions>
+
+      {shouldShowCardAction() && (
+        <CardActions sx={{ p: '0 4px 8px 4px' }}>
+          {/* member */}
+          {!!card?.memberIds?.length && (
+            <Button size="small" startIcon={<GroupIcon />}>
+              {card?.memberIds?.length}
+            </Button>
+          )}
+
+          {/* comment */}
+          {!!card?.comments?.length && (
+            <Button size="small" startIcon={<CommentIcon />}>
+              {card?.comments?.length}
+            </Button>
+          )}
+
+          {/* attachment */}
+          {!!card?.attachments?.length && (
+            <Button size="small" startIcon={<AttachmentIcon />}>
+              {card?.attachments?.length}
+            </Button>
+          )}
+        </CardActions>
+      )}
     </MuiCard>
   )
 }
