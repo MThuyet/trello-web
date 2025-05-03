@@ -18,8 +18,11 @@ import DragHandleIcon from '@mui/icons-material/DragHandle'
 import Box from '@mui/material/Box'
 import ListCards from './ListCards/ListCards'
 import { mapOrder } from '~/utils/sorts'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 const Column = ({ column }) => {
+  // Dropdown
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -29,10 +32,30 @@ const Column = ({ column }) => {
     setAnchorEl(null)
   }
 
+  // Sortable
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+
+  // Drag and Drop
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: column._id,
+    data: { ...column }
+  })
+
+  const dndKitColumnStyle = {
+    // dùng touchAction: 'none' để không bị lỗi kéo thả trên mobile
+    touchAction: 'none', // dành cho sensor default dạng PointerSensor
+    // nếu sử dụng CSS.Tranform như doc thì bị lỗi stretch
+    // https://github.com/clauderic/dnd-kit/issues/117
+    transform: CSS.Translate.toString(transform),
+    transition
+  }
 
   return (
     <Box
+      ref={setNodeRef}
+      style={dndKitColumnStyle}
+      {...attributes}
+      {...listeners}
       sx={{
         minWidth: '300px',
         maxWidth: '300px',
