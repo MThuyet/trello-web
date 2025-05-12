@@ -197,13 +197,13 @@ const BoardContent = ({ board }) => {
       } else {
         // kéo thả card trong cùng 1 column
 
-        // lấy vị trí cũ từ oldColumnWhenDraggingCard
-        const oldCardIndex = oldColumnWhenDraggingCard?.cards?.findIndex((c) => c._id === activeDragItemId)
+        // Lấy vị trí current của card đang kéo trong column hiện tại
+        const currentCardIndex = activeColumn?.cards?.findIndex((c) => c._id === activeDragItemId)
         // lấy vị trí mới từ over
         const newCardIndex = overColumn?.cards?.findIndex((c) => c._id === overCardId)
 
         // dùng arrayMove để sắp xếp lại vị trí mảng như đã kéo thả
-        const dndOrderedCards = arrayMove(overColumn.cards, oldCardIndex, newCardIndex)
+        const dndOrderedCards = arrayMove(activeColumn.cards, currentCardIndex, newCardIndex)
 
         // cập nhật lại state columns
         setOrderedColumns((prevColumns) => {
