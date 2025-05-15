@@ -12,13 +12,13 @@ import {
   defaultDropAnimationSideEffects,
   closestCorners,
   getFirstCollision,
-  closestCenter
+  pointerWithin
+  // closestCenter
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Card/Card'
 import { cloneDeep } from 'lodash'
-import { pointerWithin, rectIntersection } from '@dnd-kit/core'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
@@ -270,21 +270,24 @@ const BoardContent = ({ board }) => {
         return closestCorners({ ...args })
       }
 
-      // tìm các điểm giao nhau va chạm con trỏ
+      // tìm các điểm giao nhau va chạm con trỏ (mảng)
       const poiterIntersection = pointerWithin(args)
 
-      // thuật toán phát hiện va chạm sẽ trả về các mảng va chạm
-      const intersections = poiterIntersection.length > 0 ? poiterIntersection : rectIntersection(args)
+      // khi kéo ra khỏi khu vực kéo thả hoặc poiterIntersection là mảng rỗng thì return
+      if (!poiterIntersection?.length) return
 
-      // tìm over id đầu tiên trong mảng intersections
-      let overId = getFirstCollision(intersections, 'id')
+      // thuật toán phát hiện va chạm sẽ trả về các mảng va chạm
+      // const intersections = poiterIntersection.length > 0 ? poiterIntersection : rectIntersection(args)
+
+      // tìm over id đầu tiên trong mảng poiterIntersection
+      let overId = getFirstCollision(poiterIntersection, 'id')
       if (overId) {
-        // nếu overId là column thì tìm tới cardId gần nhất bên trong khu vực va chạm đó dựa vào thuật toán phát hiện va chạm closestCenters hoặc closestCorners
+        // nếu overId là column thì tìm tới cardId gần nhất bên trong khu vực va chạm đó dựa vào thuật toán phát hiện va chạm closestCorners hoặc closestCenter
 
         const checkColumn = orderedColumns.find((column) => column._id === overId)
         if (checkColumn) {
           // console.log('overIdBefore', overId)
-          overId = closestCenter({
+          overId = closestCorners({
             ...args,
             droppableContainers: args.droppableContainers.filter((container) => {
               return container.id !== overId && checkColumn?.cardOrderIds?.includes(container.id)
