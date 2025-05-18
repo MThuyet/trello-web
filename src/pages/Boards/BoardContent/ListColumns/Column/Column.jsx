@@ -218,16 +218,16 @@ const Column = ({ column }) => {
                 size="small"
                 variant="outlined"
                 autoFocus
+                data-no-dnd="true"
                 value={newCardTitle}
                 onChange={(e) => setNewCardTitle(e.target.value)}
                 sx={{
                   width: '100%',
-                  '& label': { color: 'text.primary' },
+                  '& label': { color: (theme) => theme.palette.primary.main },
                   '& input': {
-                    color: (theme) => theme.palette.text.primary,
+                    color: (theme) => theme.palette.primary.main,
                     bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : 'white')
                   },
-                  '& label.Mui-focused': { color: (theme) => theme.palette.primary.main },
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': { borderColor: (theme) => theme.palette.primary.main },
                     '&:hover fieldset': { borderColor: (theme) => theme.palette.primary.main },
@@ -245,6 +245,7 @@ const Column = ({ column }) => {
                   gap: 1
                 }}>
                 <Button
+                  data-no-dnd="true"
                   onClick={addNewCard}
                   variant="contained"
                   color="success"
@@ -258,6 +259,7 @@ const Column = ({ column }) => {
                   Add
                 </Button>
                 <CloseIcon
+                  data-no-dnd="true"
                   onClick={toggleOpenNewCardForm}
                   fontSize="small"
                   sx={{
