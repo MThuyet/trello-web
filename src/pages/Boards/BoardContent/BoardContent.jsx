@@ -11,7 +11,6 @@ import {
   closestCorners,
   getFirstCollision,
   pointerWithin
-  // closestCenter
 } from '@dnd-kit/core'
 import { MouseSensor, TouchSensor } from '~/customLibraries/DndKitSensors'
 import { arrayMove } from '@dnd-kit/sortable'
