@@ -16,7 +16,7 @@ const ListColumns = ({ columns, createNewColumn, createNewCard }) => {
   const [newColumnTitle, setNewColumnTitle] = useState('')
 
   // hàm tạo column
-  const addNewColumn = async () => {
+  const addNewColumn = () => {
     if (!newColumnTitle) {
       toast.error('Please enter column title')
       return
@@ -28,7 +28,7 @@ const ListColumns = ({ columns, createNewColumn, createNewCard }) => {
     }
 
     // gọi lên props ở component cha cao nhất
-    await createNewColumn(newColumnData)
+    createNewColumn(newColumnData)
 
     // reset lại trạng thái
     setNewColumnTitle('')

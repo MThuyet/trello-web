@@ -8,8 +8,15 @@ export const fetchBoardDetailsAPI = async (boardId) => {
   return response.data
 }
 
+// update columnOrderIds
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
   const response = await axios.put(`${API_ROUTE}/v1/boards/${boardId}`, updateData)
+  return response.data
+}
+
+// update cardOrderIds
+export const updateColumnDetailsAPI = async (columnId, updateData) => {
+  const response = await axios.put(`${API_ROUTE}/v1/columns/${columnId}`, updateData)
   return response.data
 }
 

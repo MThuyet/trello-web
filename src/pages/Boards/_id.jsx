@@ -4,7 +4,7 @@ import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 import { useEffect, useState } from 'react'
-import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI, updateBoardDetailsAPI } from '~/apis'
+import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI, updateBoardDetailsAPI, updateColumnDetailsAPI } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatter'
 import { isEmpty } from 'lodash'
 
@@ -64,7 +64,7 @@ const Board = () => {
   }
 
   // gọi API sắp xếp lại khi kéo thả column xong
-  const moveColumn = async (dndOrderedColumns) => {
+  const moveColumn = (dndOrderedColumns) => {
     const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id)
 
     // set lại state trước
@@ -74,14 +74,35 @@ const Board = () => {
     setBoard(newBoard)
 
     // call API update
-    await updateBoardDetailsAPI(board._id, { columnOrderIds: dndOrderedColumnsIds })
+    updateBoardDetailsAPI(board._id, { columnOrderIds: dndOrderedColumnsIds })
+  }
+
+  // di chuyển card trong cùng 1 column, gọi API cập nhật mảng cardOrderIds trong column chứa card
+  const moveCardInTheSameColumn = (dndOrderedCards, dndOrderedCardIds, columnId) => {
+    // update chuẩn dữ liệu state
+    const newBoard = { ...board }
+    const columnToUpdate = newBoard.columns.find((column) => column._id === columnId)
+    if (columnToUpdate) {
+      columnToUpdate.cards = dndOrderedCards
+      columnToUpdate.cardOrderIds = dndOrderedCardIds
+    }
+    setBoard(newBoard)
+
+    // call API tới backend
+    updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds })
   }
 
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar />
       <BoardBar board={board} />
-      <BoardContent board={board} createNewColumn={createNewColumn} createNewCard={createNewCard} moveColumn={moveColumn} />
+      <BoardContent
+        board={board}
+        createNewColumn={createNewColumn}
+        createNewCard={createNewCard}
+        moveColumn={moveColumn}
+        moveCardInTheSameColumn={moveCardInTheSameColumn}
+      />
     </Container>
   )
 }
