@@ -24,7 +24,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-const BoardContent = ({ board, createNewColumn, createNewCard }) => {
+const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn }) => {
   // https://docs.dndkit.com/api-documentation/sensors#usesensors
   // fix khi click cũng kích hoạt event nhưng còn bug
   // const pointerSensor = useSensor(PointerSensor, {
@@ -249,10 +249,11 @@ const BoardContent = ({ board, createNewColumn, createNewCard }) => {
         // dùng arrayMove để sắp xếp lại vị trí mảng như đã kéo thả
         // https://docs.dndkit.com/presets/sortable#overview
         const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
+        // cập nhật state để giao diện ăn luôn sau khi kéo, tránh lỗi delay hoặc flickering khi call API phải mất thời gian chờ
         setOrderedColumns(dndOrderedColumns)
 
-        // const dndOrderedColumnsIds = dndOrderedColumns.map((column) => column._id)
-        // console.log('dndOrderedColumnsIds', dndOrderedColumnsIds)
+        // sau đó gọi API sắp xếp lại
+        moveColumn(dndOrderedColumns)
       }
     }
 
