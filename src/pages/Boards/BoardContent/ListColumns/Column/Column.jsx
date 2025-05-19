@@ -24,7 +24,7 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import { toast } from 'react-toastify'
 
-const Column = ({ column }) => {
+const Column = ({ column, createNewCard }) => {
   // Dropdown
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -62,12 +62,18 @@ const Column = ({ column }) => {
   const [newCardTitle, setNewCardTitle] = useState('')
 
   // hàm tạo Card
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter card title', { position: 'bottom-right' })
       return
     }
-    // xử lý dữ liệu
+
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id
+    }
+
+    await createNewCard(newCardData)
 
     setNewCardTitle('')
     toggleOpenNewCardForm()
