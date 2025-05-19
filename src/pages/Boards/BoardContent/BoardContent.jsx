@@ -24,7 +24,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn }) => {
+const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn, moveCardInTheSameColumn }) => {
   // https://docs.dndkit.com/api-documentation/sensors#usesensors
   // fix khi click cũng kích hoạt event nhưng còn bug
   // const pointerSensor = useSensor(PointerSensor, {
@@ -205,6 +205,7 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn }) => 
 
       // trong quá trình kéo thả, state đã bị thay đổi trong handleDragOver, nên khi kết thúc quá trình kéo cần phải biết card được kéo từ column nào chứ không chỉ là biết card đang ở column nào
       // => phải dùng activeDragItemData.columnId hoặc tạo state oldColumnWhenDraggingCard._id (set vào state từ bước handleDragStart) chứ không dùng activeData trong scope handleDragEnd này vì sau khi đi qua handleDragOver thì state của card đã bị cập nhật một lần rồi
+      // kéo card giữa các column khác nhau
       if (oldColumnWhenDraggingCard._id !== overColumn._id) {
         moveCardBetweenDifferentColumns(overColumn, overCardId, active, over, activeColumn, activeDraggingCardId, activeDraggingCardData)
       } else {
@@ -217,6 +218,7 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn }) => 
 
         // dùng arrayMove để sắp xếp lại vị trí mảng như đã kéo thả
         const dndOrderedCards = arrayMove(activeColumn.cards, currentCardIndex, newCardIndex)
+        const dndOrderedCardIds = dndOrderedCards.map((card) => card._id)
 
         // cập nhật lại state columns
         setOrderedColumns((prevColumns) => {
@@ -228,12 +230,15 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn }) => 
           // cập nhật lại 2 giá trị mới là cards và cardOrderIds của column đích
           if (targetColumn) {
             targetColumn.cards = dndOrderedCards
-            targetColumn.cardOrderIds = dndOrderedCards.map((card) => card._id)
+            targetColumn.cardOrderIds = dndOrderedCardIds
           }
 
           // trả về state mới chuẩn vị trí, vì targetColumn đang là một đối tượng trong mảng orderedColumns, nên khi thay đổi thuộc tính của đối tượng(targetColumn) thì mảng orderedColumns cũng bị thay đổi theo
           return updatedColumns
         })
+
+        // gọi tới function cha để call API update cardOrderIds
+        moveCardInTheSameColumn(dndOrderedCards, dndOrderedCardIds, oldColumnWhenDraggingCard._id)
       }
     }
 

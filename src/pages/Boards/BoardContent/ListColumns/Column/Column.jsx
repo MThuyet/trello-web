@@ -62,7 +62,7 @@ const Column = ({ column, createNewCard }) => {
   const [newCardTitle, setNewCardTitle] = useState('')
 
   // hàm tạo Card
-  const addNewCard = async () => {
+  const addNewCard = () => {
     if (!newCardTitle) {
       toast.error('Please enter card title', { position: 'bottom-right' })
       return
@@ -73,7 +73,7 @@ const Column = ({ column, createNewCard }) => {
       columnId: column._id
     }
 
-    await createNewCard(newCardData)
+    createNewCard(newCardData)
 
     setNewCardTitle('')
     toggleOpenNewCardForm()
