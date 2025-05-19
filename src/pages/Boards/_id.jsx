@@ -5,6 +5,8 @@ import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 import { useEffect, useState } from 'react'
 import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI } from '~/apis'
+import { generatePlaceholderCard } from '~/utils/formatter'
+import { isEmpty } from 'lodash'
 
 const Board = () => {
   const [board, setBoard] = useState(null)
@@ -13,7 +15,17 @@ const Board = () => {
   useEffect(() => {
     // hardcode boardId
     const boardId = '68293d20cf366bea77979493'
-    fetchBoardDetailsAPI(boardId).then((board) => setBoard(board))
+    fetchBoardDetailsAPI(boardId).then((board) => {
+      // khi F5 web cũng cần xử lý kéo thả card cho column rỗng
+      board.columns.forEach((column) => {
+        if (isEmpty(column.cards)) {
+          column.cards = [generatePlaceholderCard(column)]
+          column.cardOrderIds = [generatePlaceholderCard(column)._id]
+        }
+      })
+
+      setBoard(board)
+    })
   }, [])
 
   // gọi API tạo mới column và làm lại dữ liệu state board
@@ -22,6 +34,10 @@ const Board = () => {
       ...newColumnData,
       boardId: board._id
     })
+
+    // xử lý kéo thả khi column mới được tạo nên rỗng
+    createdColumn.cards = [generatePlaceholderCard(createdColumn)]
+    createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id]
 
     // FE tự làm đúng lại state board thay vì gọi lại fetchBoardDetailsAPI
     const newBoard = { ...board }
