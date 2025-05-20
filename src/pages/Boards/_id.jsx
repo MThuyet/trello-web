@@ -7,6 +7,9 @@ import { useEffect, useState } from 'react'
 import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI, updateBoardDetailsAPI, updateColumnDetailsAPI } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatter'
 import { isEmpty } from 'lodash'
+import { mapOrder } from '~/utils/sorts'
+import { Box, Typography } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const Board = () => {
   const [board, setBoard] = useState(null)
@@ -16,11 +19,17 @@ const Board = () => {
     // hardcode boardId
     const boardId = '68293d20cf366bea77979493'
     fetchBoardDetailsAPI(boardId).then((board) => {
-      // khi F5 web cũng cần xử lý kéo thả card cho column rỗng
+      // sắp xếp thứ tự các column trước khi đưa data xuống dưới để tránh conflic data
+      board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
+
       board.columns.forEach((column) => {
+        // khi F5 web cũng cần xử lý kéo thả card cho column rỗng
         if (isEmpty(column.cards)) {
           column.cards = [generatePlaceholderCard(column)]
           column.cardOrderIds = [generatePlaceholderCard(column)._id]
+          // sắp xếp thứ tự các card
+        } else {
+          column.cards = mapOrder(column.cards, column.cardOrderIds, '_id')
         }
       })
 
@@ -90,6 +99,15 @@ const Board = () => {
 
     // call API tới backend
     updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds })
+  }
+
+  if (!board) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+        <Typography sx={{ ml: 2 }}>Loading Board...</Typography>
+      </Box>
+    )
   }
 
   return (

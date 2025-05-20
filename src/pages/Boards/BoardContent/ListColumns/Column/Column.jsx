@@ -17,7 +17,6 @@ import Button from '@mui/material/Button'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import Box from '@mui/material/Box'
 import ListCards from './ListCards/ListCards'
-import { mapOrder } from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import TextField from '@mui/material/TextField'
@@ -35,8 +34,8 @@ const Column = ({ column, createNewCard }) => {
     setAnchorEl(null)
   }
 
-  // Sortable
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  // Card đã được sắp xếp
+  const orderedCards = column.cards
 
   // Drag and Drop
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
