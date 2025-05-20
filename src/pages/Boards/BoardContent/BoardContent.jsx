@@ -23,7 +23,8 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn, moveCardInTheSameColumn }) => {
+const BoardContent = (props) => {
+  const { board, createNewColumn, createNewCard, moveColumn, moveCardInTheSameColumn, moveCardToDifferentColumn } = props
   // https://docs.dndkit.com/api-documentation/sensors#usesensors
   // fix khi click cũng kích hoạt event nhưng còn bug
   // const pointerSensor = useSensor(PointerSensor, {
@@ -79,7 +80,7 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn, moveC
     return orderedColumns.find((column) => column?.cards?.map((card) => card._id)?.includes(cardId))
   }
 
-  // cập nhật lại state trong trường hợp di chuyển card giữa các column khác nhau
+  // function chung xử lý cập nhật lại state trong trường hợp di chuyển card giữa các column khác nhau
   const moveCardBetweenDifferentColumns = (
     overColumn,
     overCardId,
@@ -87,7 +88,8 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn, moveC
     over,
     activeColumn,
     activeDraggingCardId,
-    activeDraggingCardData
+    activeDraggingCardData,
+    triggerFrom
   ) => {
     setOrderedColumns((currentColumns) => {
       // tìm vị trí (index) của overCard trong column đích (nơi card sắp được thả)
@@ -140,6 +142,11 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn, moveC
         targetColumn.cardOrderIds = targetColumn.cards.map((card) => card._id)
       }
 
+      // nếu là handleDragEnd thì xử lý gọi API
+      if (triggerFrom === 'handleDragEnd') {
+        moveCardToDifferentColumn(activeDraggingCardId, oldColumnWhenDraggingCard._id, targetColumn._id, updatedColumns)
+      }
+
       return updatedColumns
     })
   }
@@ -174,7 +181,16 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn, moveC
 
     // chỉ khi đang kéo card qua column khác thì mới xử lý
     if (activeColumn._id !== overColumn._id) {
-      moveCardBetweenDifferentColumns(overColumn, overCardId, active, over, activeColumn, activeDraggingCardId, activeDraggingCardData)
+      moveCardBetweenDifferentColumns(
+        overColumn,
+        overCardId,
+        active,
+        over,
+        activeColumn,
+        activeDraggingCardId,
+        activeDraggingCardData,
+        'handleDragOver'
+      )
     }
   }
 
@@ -206,7 +222,16 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn, moveC
       // => phải dùng activeDragItemData.columnId hoặc tạo state oldColumnWhenDraggingCard._id (set vào state từ bước handleDragStart) chứ không dùng activeData trong scope handleDragEnd này vì sau khi đi qua handleDragOver thì state của card đã bị cập nhật một lần rồi
       // kéo card giữa các column khác nhau
       if (oldColumnWhenDraggingCard._id !== overColumn._id) {
-        moveCardBetweenDifferentColumns(overColumn, overCardId, active, over, activeColumn, activeDraggingCardId, activeDraggingCardData)
+        moveCardBetweenDifferentColumns(
+          overColumn,
+          overCardId,
+          active,
+          over,
+          activeColumn,
+          activeDraggingCardId,
+          activeDraggingCardData,
+          'handleDragEnd'
+        )
       } else {
         // kéo thả card trong cùng 1 column
 
