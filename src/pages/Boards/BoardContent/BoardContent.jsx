@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
-import { mapOrder } from '~/utils/sorts'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   DndContext,
@@ -60,8 +59,8 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn, moveC
   const lastOverId = useRef(null) // điểm va chạm cuối cùng trước đó (xử lý thuật toán phát hiện va chạm)
 
   useEffect(() => {
-    const orderedColumn = mapOrder(board?.columns, board?.columnOrderIds, '_id')
-    setOrderedColumns(orderedColumn)
+    // columns đã được sắp xếp ở component cha cao nhất
+    setOrderedColumns(board.columns)
   }, [board])
 
   // bắt đầu kéo
@@ -215,6 +214,8 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumn, moveC
         const currentCardIndex = activeColumn?.cards?.findIndex((c) => c._id === activeDragItemId)
         // lấy vị trí mới từ over
         const newCardIndex = overColumn?.cards?.findIndex((c) => c._id === overCardId)
+
+        if (currentCardIndex === newCardIndex) return
 
         // dùng arrayMove để sắp xếp lại vị trí mảng như đã kéo thả
         const dndOrderedCards = arrayMove(activeColumn.cards, currentCardIndex, newCardIndex)
