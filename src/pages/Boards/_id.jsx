@@ -73,8 +73,15 @@ const Board = () => {
     // tìm column chứa card vừa tạo và cập nhật column đó
     const columnToUpdate = newBoard.columns.find((column) => column._id === createdCard.columnId)
     if (columnToUpdate) {
-      columnToUpdate.cards.push(createdCard)
-      columnToUpdate.cardOrderIds.push(createdCard._id)
+      // nếu column rỗng hoặc chỉ chứa card ảo do FE
+      if (columnToUpdate.cards.some((card) => card.FE_PlaceholderCard)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      } else {
+        // column đã có data thật thì push vào cuối mảng
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
     }
     setBoard(newBoard)
   }
@@ -124,10 +131,14 @@ const Board = () => {
     setBoard(newBoard)
 
     // gọi API cập nhật
+    let originalCardOrderIds = dndOrderedColumns.find((c) => c._id === originalColumnId).cardOrderIds
+    // nếu mảng chỉ chứa placeholder card do front-end tạo ra thì xóa đi
+    if (originalCardOrderIds[0].includes('placeholder-card')) originalCardOrderIds = []
+
     moveCardToDifferentColumnAPI({
       currentCardId,
       originalColumnId,
-      originalCardOrderIds: dndOrderedColumns.find((c) => c._id === originalColumnId).cardOrderIds,
+      originalCardOrderIds,
       newColumnId,
       newCardOrderIds: dndOrderedColumns.find((c) => c._id === newColumnId).cardOrderIds
     })
