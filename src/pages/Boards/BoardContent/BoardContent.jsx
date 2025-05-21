@@ -24,7 +24,8 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 }
 
 const BoardContent = (props) => {
-  const { board, createNewColumn, createNewCard, moveColumn, moveCardInTheSameColumn, moveCardToDifferentColumn } = props
+  const { board, createNewColumn, createNewCard, moveColumn, moveCardInTheSameColumn, moveCardToDifferentColumn, deleteColumnDetails } =
+    props
   // https://docs.dndkit.com/api-documentation/sensors#usesensors
   // fix khi click cũng kích hoạt event nhưng còn bug
   // const pointerSensor = useSensor(PointerSensor, {
@@ -365,7 +366,12 @@ const BoardContent = (props) => {
           height: (theme) => theme.trello.boardContentHeight,
           p: '10px 0'
         }}>
-        <ListColumns columns={orderedColumns} createNewColumn={createNewColumn} createNewCard={createNewCard} />
+        <ListColumns
+          columns={orderedColumns}
+          createNewColumn={createNewColumn}
+          createNewCard={createNewCard}
+          deleteColumnDetails={deleteColumnDetails}
+        />
         <DragOverlay dropAnimation={customDropAnimation}>
           {!activeDragItemType && null}
           {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && <Column column={activeDragItemData} />}
