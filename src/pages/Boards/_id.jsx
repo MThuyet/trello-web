@@ -26,7 +26,8 @@ const Board = () => {
   // call api fetch board details
   useEffect(() => {
     // hardcode boardId
-    const boardId = '68293d20cf366bea77979493'
+    const boardId = '682e95bd685331a06ca8d306'
+
     fetchBoardDetailsAPI(boardId).then((board) => {
       // sắp xếp thứ tự các column trước khi đưa data xuống dưới để tránh conflic data
       board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
