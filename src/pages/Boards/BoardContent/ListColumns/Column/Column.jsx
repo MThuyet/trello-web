@@ -23,8 +23,17 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import { toast } from 'react-toastify'
 import { useConfirm } from 'material-ui-confirm'
+import { createNewCardAPI } from '~/apis'
+import { cloneDeep } from 'lodash'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { deleteColumnAPI } from '~/apis'
 
-const Column = ({ column, createNewCard, deleteColumnDetails }) => {
+const Column = ({ column }) => {
+  // redux
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
+
   // Dropdown
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -62,7 +71,7 @@ const Column = ({ column, createNewCard, deleteColumnDetails }) => {
   const [newCardTitle, setNewCardTitle] = useState('')
 
   // hàm tạo Card
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter card title', { position: 'bottom-right' })
       return
@@ -73,8 +82,29 @@ const Column = ({ column, createNewCard, deleteColumnDetails }) => {
       columnId: column._id
     }
 
-    createNewCard(newCardData)
+    // call API tạo card
+    const createdCard = await createNewCardAPI({
+      ...newCardData,
+      boardId: board._id
+    })
 
+    const newBoard = cloneDeep(board)
+    // tìm column chứa card vừa tạo và cập nhật column đó
+    const columnToUpdate = newBoard.columns.find((column) => column._id === createdCard.columnId)
+    if (columnToUpdate) {
+      // nếu column rỗng hoặc chỉ chứa card ảo do FE
+      if (columnToUpdate.cards.some((card) => card.FE_PlaceholderCard)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      } else {
+        // column đã có data thật thì push vào cuối mảng
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
+    }
+    dispatch(updateCurrentActiveBoard(newBoard))
+
+    // reset lại trạng thái
     setNewCardTitle('')
     toggleOpenNewCardForm()
   }
@@ -91,7 +121,17 @@ const Column = ({ column, createNewCard, deleteColumnDetails }) => {
       confirmationButtonProps: { color: 'error' }
     })
       .then(() => {
-        deleteColumnDetails(column._id)
+        // xóa column và card bên trong nó
+        // update chuẩn dữ liệu state
+        const newBoard = cloneDeep(board)
+        newBoard.columns = newBoard.columns.filter((c) => c._id !== column._id)
+        newBoard.columnOrderIds = newBoard.columnOrderIds.filter((_id) => _id !== column._id)
+        dispatch(updateCurrentActiveBoard(newBoard))
+
+        // gọi API xử lý phía backend
+        deleteColumnAPI(column._id).then((res) => {
+          toast.success(res?.deleteResult, { position: 'bottom-left' })
+        })
       })
       .catch(() => {})
   }
