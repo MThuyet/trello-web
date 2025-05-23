@@ -10,18 +10,21 @@ import CircularProgress from '@mui/material/CircularProgress'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchBoardDetailsAPI, selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { cloneDeep } from 'lodash'
+import { useParams } from 'react-router-dom'
 
 const Board = () => {
   const dispatch = useDispatch()
   // lấy dữ liệu board từ redux
   const board = useSelector(selectCurrentActiveBoard)
 
+  // lấy boardId từ url
+  const { boardId } = useParams()
+
   // call api fetch board details
   useEffect(() => {
-    const boardId = '682e95bd685331a06ca8d306'
     // sử dụng dispatch để gọi các function của redux
     dispatch(fetchBoardDetailsAPI(boardId))
-  }, [dispatch])
+  }, [dispatch, boardId])
 
   // gọi API sắp xếp lại khi kéo thả column xong
   const moveColumn = (dndOrderedColumns) => {

@@ -12,21 +12,26 @@ import { ConfirmProvider } from 'material-ui-confirm'
 // redux
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
+// react router dom
+import { BrowserRouter } from 'react-router-dom'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
-    <CssVarsProvider theme={theme}>
-      <ConfirmProvider
-        defaultOptions={{
-          dialogProps: { maxWidth: 'xs' },
-          cancellationButtonProps: { color: 'inherit' },
-          confirmationButtonProps: { variant: 'outlined' },
-          allowClose: false
-        }}>
-        <CssBaseline />
-        <App />
-        <ToastContainer position="bottom-left" theme="colored" />
-      </ConfirmProvider>
-    </CssVarsProvider>
-  </Provider>
+  // basename: đường dẫn gốc của project, luôn luôn phải đi qua trước khi truy cập vào các route khác
+  <BrowserRouter basename="/">
+    <Provider store={store}>
+      <CssVarsProvider theme={theme}>
+        <ConfirmProvider
+          defaultOptions={{
+            dialogProps: { maxWidth: 'xs' },
+            cancellationButtonProps: { color: 'inherit' },
+            confirmationButtonProps: { variant: 'outlined' },
+            allowClose: false
+          }}>
+          <CssBaseline />
+          <App />
+          <ToastContainer position="bottom-left" theme="colored" />
+        </ConfirmProvider>
+      </CssVarsProvider>
+    </Provider>
+  </BrowserRouter>
 )
