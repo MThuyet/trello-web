@@ -10,10 +10,24 @@ import CardActions from '@mui/material/CardActions'
 import TextField from '@mui/material/TextField'
 import Zoom from '@mui/material/Zoom'
 import Alert from '@mui/material/Alert'
+import { useForm } from 'react-hook-form'
+import { EMAIL_RULE, EMAIL_RULE_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE, FIELD_REQUIRED_MESSAGE } from '~/utils/validators'
+import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 
 function LoginForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm()
+
+  const submitLogin = (data) => {
+    console.log('data', data)
+  }
+
   return (
-    <form>
+    // handle submit validate lỗi trước, nếu không có lỗi mới chạy vô submitLogin
+    <form onSubmit={handleSubmit(submitLogin)}>
       <Zoom in={true} style={{ transitionDelay: '200ms' }}>
         <MuiCard sx={{ minWidth: 380, maxWidth: 380, marginTop: '6em' }}>
           <Box
@@ -33,7 +47,7 @@ function LoginForm() {
           <Box sx={{ marginTop: '1em', display: 'flex', justifyContent: 'center', color: (theme) => theme.palette.grey[500] }}>
             Author: MthuyetDev
           </Box>
-          <Box sx={{ marginTop: '1em', display: 'flex', justifyContent: 'center', flexDirection: 'column', padding: '0 1em' }}>
+          {/* <Box sx={{ marginTop: '1em', display: 'flex', justifyContent: 'center', flexDirection: 'column', padding: '0 1em' }}>
             <Alert severity="success" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
               Your email&nbsp;
               <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>
@@ -51,13 +65,36 @@ function LoginForm() {
               <br />
               Please check and verify your account before logging in!
             </Alert>
-          </Box>
+          </Box> */}
           <Box sx={{ padding: '0 1em 1em 1em' }}>
             <Box sx={{ marginTop: '1em' }}>
-              <TextField autoFocus fullWidth label="Enter Email..." type="text" variant="outlined" />
+              <TextField
+                {...register('email', {
+                  required: FIELD_REQUIRED_MESSAGE,
+                  pattern: { value: EMAIL_RULE, message: EMAIL_RULE_MESSAGE }
+                })}
+                autoFocus
+                fullWidth
+                label="Enter Email..."
+                type="text"
+                variant="outlined"
+                error={!!errors['email']}
+              />
+              <FieldErrorAlert errors={errors} fieldName="email" />
             </Box>
             <Box sx={{ marginTop: '1em' }}>
-              <TextField fullWidth label="Enter Password..." type="password" variant="outlined" />
+              <TextField
+                {...register('password', {
+                  required: FIELD_REQUIRED_MESSAGE,
+                  pattern: { value: PASSWORD_RULE, message: PASSWORD_RULE_MESSAGE }
+                })}
+                fullWidth
+                label="Enter Password..."
+                type="password"
+                variant="outlined"
+                error={!!errors['password']}
+              />
+              <FieldErrorAlert errors={errors} fieldName="password" />
             </Box>
           </Box>
           <CardActions sx={{ padding: '0 1em 1em 1em' }}>
