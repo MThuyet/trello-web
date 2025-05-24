@@ -145,6 +145,7 @@ const ListColumns = ({ columns }) => {
                 mt: 1
               }}>
               <Button
+                className="interceptor-loading"
                 onClick={addNewColumn}
                 variant="contained"
                 color="success"

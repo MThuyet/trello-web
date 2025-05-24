@@ -323,6 +323,7 @@ const Column = ({ column }) => {
                   gap: 1
                 }}>
                 <Button
+                  className="interceptor-loading"
                   data-no-dnd="true"
                   onClick={addNewCard}
                   variant="contained"
