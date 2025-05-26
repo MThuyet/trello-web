@@ -5,12 +5,11 @@ import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 import { useEffect } from 'react'
 import { updateBoardDetailsAPI, updateColumnDetailsAPI, moveCardToDifferentColumnAPI } from '~/apis'
-import { Box, Typography } from '@mui/material'
-import CircularProgress from '@mui/material/CircularProgress'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchBoardDetailsAPI, selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { cloneDeep } from 'lodash'
 import { useParams } from 'react-router-dom'
+import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner'
 
 const Board = () => {
   const dispatch = useDispatch()
@@ -85,14 +84,7 @@ const Board = () => {
     })
   }
 
-  if (!board) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-        <Typography sx={{ ml: 2 }}>Loading Board...</Typography>
-      </Box>
-    )
-  }
+  if (!board) return <PageLoadingSpinner caption="Loading board details..." />
 
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>

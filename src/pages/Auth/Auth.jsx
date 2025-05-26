@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
 
-function Auth() {
+const Auth = () => {
   const location = useLocation()
   // kiểm tra đường dẫn hiện tại đang là '/login' hay '/register'
   const isLogin = location.pathname === '/login'
