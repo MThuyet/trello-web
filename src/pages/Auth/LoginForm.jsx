@@ -1,4 +1,4 @@
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
@@ -13,8 +13,14 @@ import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
 import { EMAIL_RULE, EMAIL_RULE_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE, FIELD_REQUIRED_MESSAGE } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
+import { useDispatch } from 'react-redux'
+import { loginUserAPI } from '~/redux/user/userSlice'
+import { toast } from 'react-toastify'
 
 const LoginForm = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const [searchParams] = useSearchParams()
   const registeredEmail = searchParams.get('registeredEmail')
   const verifiedEmail = searchParams.get('verifiedEmail')
@@ -26,7 +32,18 @@ const LoginForm = () => {
   } = useForm()
 
   const submitLogin = (data) => {
-    console.log('data', data)
+    toast
+      .promise(dispatch(loginUserAPI(data)), {
+        pending: 'Logging in...',
+        error: 'Login failed!'
+      })
+      .then((res) => {
+        // nếu không lỗi thì redirec
+        if (!res.error) {
+          navigate('/')
+          toast.success('Login successfully!', { theme: 'colored' })
+        }
+      })
   }
 
   return (
