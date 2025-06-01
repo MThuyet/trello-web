@@ -50,3 +50,9 @@ export const verifyAccountAPI = async (data) => {
   if (response.data) toast.success('Verify account successfully! Now you can login to enjoy Trello', { theme: 'colored' })
   return response.data
 }
+
+// refresh token
+export const refreshTokenAPI = async () => {
+  const response = await authorizedAxiosInstance.get(`${API_ROUTE}/v1/users/refresh-token`)
+  return response.data
+}
