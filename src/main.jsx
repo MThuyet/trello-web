@@ -35,7 +35,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             }}>
             <CssBaseline />
             <App />
-            <ToastContainer position="bottom-left" theme="colored" limit={3} newestOnTop={true} autoClose={3000} />
+            <ToastContainer position="bottom-left" theme="colored" autoClose={3000} />
           </ConfirmProvider>
         </CssVarsProvider>
       </PersistGate>
