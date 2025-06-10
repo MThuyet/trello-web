@@ -9,7 +9,7 @@ export default defineConfig({
     'process.env.BUILD_MODE': JSON.stringify(process.env.BUILD_MODE)
   },
   plugins: [react(), svgr()],
-  // base: './
+  base: '/',
   resolve: {
     alias: [{ find: '~', replacement: '/src' }]
   }
