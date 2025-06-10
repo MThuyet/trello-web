@@ -39,7 +39,11 @@ const AppBar = () => {
         bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#2c3e50' : '#1565c0')
       }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <AppsIcon sx={{ color: '#fff' }} />
+        <Link to={'/boards'}>
+          <Tooltip title="Board List">
+            <AppsIcon sx={{ color: '#fff', verticalAlign: 'middle' }} />
+          </Tooltip>
+        </Link>
 
         {/* Trello Icon */}
         <Link to={'/'}>
