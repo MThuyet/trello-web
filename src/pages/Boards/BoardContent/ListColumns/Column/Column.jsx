@@ -1,4 +1,3 @@
-import Typography from '@mui/material/Typography'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Divider from '@mui/material/Divider'
@@ -23,11 +22,12 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import { toast } from 'react-toastify'
 import { useConfirm } from 'material-ui-confirm'
-import { createNewCardAPI } from '~/apis'
+import { createNewCardAPI, updateColumnDetailsAPI } from '~/apis'
 import { cloneDeep } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { deleteColumnAPI } from '~/apis'
+import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 
 const Column = ({ column }) => {
   // redux
@@ -136,6 +136,20 @@ const Column = ({ column }) => {
       .catch(() => {})
   }
 
+  // update column title
+  const onUpdateColumnTitle = (newTitle) => {
+    // call api update column và xử lý dữ liệu board trong redux
+    updateColumnDetailsAPI(column._id, { title: newTitle }).then(() => {
+      toast.success('Updated column successfully!')
+      const newBoard = cloneDeep(board)
+      const columnToUpdate = newBoard.columns.find((c) => c._id === column._id)
+      if (columnToUpdate) {
+        columnToUpdate.title = newTitle
+      }
+      dispatch(updateCurrentActiveBoard(newBoard))
+    })
+  }
+
   return (
     // bọc div ở ngoài để fix lỗi flickering khi kéo thả
     <div ref={setNodeRef} style={dndKitColumnStyle} {...attributes}>
@@ -159,15 +173,7 @@ const Column = ({ column }) => {
             alignItems: 'center',
             justifyContent: 'space-between'
           }}>
-          <Typography
-            variant="h6"
-            sx={{
-              fontSize: '1rem',
-              fontWeight: 'bold',
-              cursor: 'pointer'
-            }}>
-            {column?.title}
-          </Typography>
+          <ToggleFocusInput data-no-dnd="true" value={column?.title} onChangedValue={onUpdateColumnTitle} />
 
           {/* dropdown */}
           <Box>

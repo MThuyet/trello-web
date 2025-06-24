@@ -26,7 +26,7 @@ export const moveCardToDifferentColumnAPI = async (updateData) => {
   return response.data
 }
 
-// update cardOrderIds
+// update column details
 export const updateColumnDetailsAPI = async (columnId, updateData) => {
   const response = await authorizedAxiosInstance.put(`${API_ROUTE}/v1/columns/${columnId}`, updateData)
   return response.data
