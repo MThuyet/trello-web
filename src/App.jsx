@@ -20,10 +20,8 @@ function App() {
 
   return (
     <Routes>
-      {/* / => /boards/682e95bd685331a06ca8d306
-				Sử dụng replace={true} để không lưu lại history của browser
-			*/}
-      <Route path="/" element={<Navigate to="/boards/682e95bd685331a06ca8d306" />} replace={true} />
+      {/* Sử dụng replace={true} để không lưu lại history của browser */}
+      <Route path="/" element={<Navigate to="/boards" />} replace={true} />
 
       {/* Auth */}
       <Route path="/login" element={<Auth />} />
