@@ -17,6 +17,8 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 
 import { styled } from '@mui/material/styles'
+import { createNewBoardAPI } from '~/apis'
+import { toast } from 'react-toastify'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -40,7 +42,7 @@ const BOARD_TYPES = {
   PRIVATE: 'private'
 }
 
-function SidebarCreateBoardModal() {
+function SidebarCreateBoardModal({ afterCreateNewBoard }) {
   const {
     control,
     register,
@@ -54,14 +56,23 @@ function SidebarCreateBoardModal() {
   const handleCloseModal = () => {
     setIsOpen(false)
     // Reset lại toàn bộ form khi đóng Modal
-    reset()
+    reset({
+      title: '',
+      description: '',
+      type: BOARD_TYPES.PUBLIC
+    })
   }
 
   const submitCreateNewBoard = (data) => {
-    const { title, description, type } = data
-    console.log('Board title: ', title)
-    console.log('Board description: ', description)
-    console.log('Board type: ', type)
+    toast
+      .promise(createNewBoardAPI(data), {
+        pending: 'Creating new board...'
+      })
+      .then(() => {
+        toast.success('Create new board successfully!')
+        handleCloseModal()
+        afterCreateNewBoard()
+      })
   }
 
   return (
@@ -71,7 +82,7 @@ function SidebarCreateBoardModal() {
         Create a new board
       </SidebarItem>
 
-      <Modal open={isOpen} onClose={handleCloseModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+      <Modal open={isOpen} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box
           sx={{
             position: 'absolute',
@@ -162,12 +173,7 @@ function SidebarCreateBoardModal() {
                   defaultValue={BOARD_TYPES.PUBLIC}
                   control={control}
                   render={({ field }) => (
-                    <RadioGroup
-                      {...field}
-                      defaultValue={BOARD_TYPES.PUBLIC}
-                      row
-                      onChange={(event, value) => field.onChange(value)}
-                      value={field.value}>
+                    <RadioGroup {...field} row onChange={(event, value) => field.onChange(value)} value={field.value}>
                       <FormControlLabel value={BOARD_TYPES.PUBLIC} control={<Radio size="small" />} label="Public" labelPlacement="start" />
                       <FormControlLabel
                         value={BOARD_TYPES.PRIVATE}

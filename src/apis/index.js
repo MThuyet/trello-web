@@ -8,12 +8,19 @@ export const fetchBoardsAPI = async (searchPath) => {
   return response.data
 }
 
+// create new board
+export const createNewBoardAPI = async (newBoardData) => {
+  const response = await authorizedAxiosInstance.post(`${API_ROUTE}/v1/boards`, newBoardData)
+  return response.data
+}
+
 // update columnOrderIds
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
   const response = await authorizedAxiosInstance.put(`${API_ROUTE}/v1/boards/${boardId}`, updateData)
   return response.data
 }
 
+// move card to different column
 export const moveCardToDifferentColumnAPI = async (updateData) => {
   const response = await authorizedAxiosInstance.put(`${API_ROUTE}/v1/boards/supports/moving-cards`, updateData)
   return response.data

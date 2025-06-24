@@ -53,13 +53,19 @@ function Boards() {
   // lấy giá trị page từ query, nếu ko có thì mặc định là 1
   const page = parseInt(query.get('page') || '1', 10)
 
+  const updateStateBoardData = (res) => {
+    setBoards(res.boards || [])
+    setTotalBoards(res.totalBoards || 0)
+  }
+
   // fetch data
   useEffect(() => {
-    fetchBoardsAPI(location.search).then((res) => {
-      setBoards(res.boards || [])
-      setTotalBoards(res.totalBoards || 0)
-    })
+    fetchBoardsAPI(location.search).then((res) => updateStateBoardData(res))
   }, [location.search])
+
+  const afterCreateNewBoard = () => {
+    fetchBoardsAPI(location.search).then((res) => updateStateBoardData(res))
+  }
 
   if (!boards) {
     return <PageLoadingSpinner caption="Loading Boards..." />
@@ -87,7 +93,7 @@ function Boards() {
             </Stack>
             <Divider sx={{ my: 1 }} />
             <Stack direction="column" spacing={1}>
-              <SidebarCreateBoardModal />
+              <SidebarCreateBoardModal afterCreateNewBoard={afterCreateNewBoard} />
             </Stack>
           </Grid>
 
